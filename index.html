@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Twyn — converse e aprenda inglês</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --tw-orange: #F07A1F;
+    --tw-cream: #FDF8F3;
+    --tw-ink: #1A1410;
+    --tw-muted: #6B5F54;
+    --tw-green: oklch(0.72 0.12 155);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: transparent;
+    color: var(--tw-ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Scroll-driven gradient layer (set via JS) */
+  .bg-gradient {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: #FFF5E8;
+    will-change: background;
+  }
+  ::selection { background: var(--tw-orange); color: #fff; }
+
+  .chat-container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 120px 20px 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .msg {
+    max-width: 78%;
+    padding: 14px 18px;
+    font-size: 16px;
+    line-height: 1.45;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 600ms cubic-bezier(0.2, 0.8, 0.2, 1), transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    word-wrap: break-word;
+  }
+  .msg.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .bot {
+    align-self: flex-start;
+    background: #FFFFFF;
+    color: var(--tw-ink);
+    border-radius: 20px 20px 20px 6px;
+    box-shadow: 0 1px 2px rgba(26,20,16,0.06);
+  }
+  .bot.tail-continue {
+    border-radius: 20px 20px 20px 20px;
+  }
+  .me {
+    align-self: flex-end;
+    background: var(--tw-orange);
+    color: #fff;
+    border-radius: 20px 20px 6px 20px;
+    box-shadow: 0 2px 8px -2px rgba(240,122,31,0.35);
+  }
+  .me.tail-continue {
+    border-radius: 20px 20px 20px 20px;
+  }
+
+  .group-gap { height: 18px; }
+  .day-gap { height: 40px; }
+
+  .timestamp {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    color: var(--tw-muted);
+    text-transform: uppercase;
+    margin: 28px 0 12px;
+    opacity: 0;
+    transition: opacity 600ms ease;
+  }
+  .timestamp.in { opacity: 1; }
+
+  .msg.statement {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 28px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 500;
+    padding: 20px 24px;
+    max-width: 92%;
+    text-wrap: balance;
+  }
+  .msg.statement em {
+    color: var(--tw-orange);
+    font-style: italic;
+    font-weight: 500;
+  }
+  .me.statement em {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .chat-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 20;
+    background: rgba(255, 245, 232, 0.78);
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    border-bottom: 1px solid rgba(26,20,16,0.06);
+  }
+  .chat-header-inner {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px -2px rgba(240,122,31,0.4);
+    overflow: hidden;
+  }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .avatar-pulse { position: relative; }
+  .avatar-pulse::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; right: -1px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--tw-green);
+    border: 2.5px solid #FFF5E8;
+  }
+  .chat-header-meta { flex: 1; min-width: 0; }
+  .chat-header-name {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--tw-ink);
+    line-height: 1.1;
+  }
+  .chat-header-status {
+    font-size: 12px;
+    color: var(--tw-green);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 2px;
+  }
+  .chat-header-status::before {
+    content: '';
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--tw-green);
+  }
+
+  .contact-card {
+    align-self: flex-start;
+    background: #FFFFFF;
+    border-radius: 20px 20px 20px 6px;
+    box-shadow: 0 1px 2px rgba(26,20,16,0.06);
+    padding: 14px 14px 4px;
+    max-width: 82%;
+    width: 340px;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 600ms cubic-bezier(0.2, 0.8, 0.2, 1), transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    text-decoration: none;
+    color: inherit;
+  }
+  .contact-card.in { opacity: 1; transform: translateY(0); }
+  .contact-card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 4px 14px;
+  }
+  .contact-card-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px -2px rgba(240,122,31,0.35);
+    overflow: hidden;
+  }
+  .contact-card-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .contact-card-name {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--tw-ink);
+    line-height: 1.1;
+  }
+  .contact-card-phone {
+    font-size: 13px;
+    color: var(--tw-muted);
+    margin-top: 3px;
+    font-variant-numeric: tabular-nums;
+  }
+  .contact-card-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    border-top: 1px solid #F0E8DE;
+    color: var(--tw-orange);
+    font-weight: 600;
+    font-size: 14.5px;
+    text-decoration: none;
+    transition: background 150ms ease;
+    border-radius: 0 0 20px 6px;
+  }
+  .contact-card-cta:hover { background: #FDF0E0; }
+  .contact-card-cta svg { width: 16px; height: 16px; }
+
+  .inline-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    background: var(--tw-orange);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 4px 12px -4px rgba(240,122,31,0.4);
+    transition: transform 150ms ease;
+  }
+  .inline-cta:hover { transform: translateY(-1px); }
+  .inline-cta svg { width: 14px; height: 14px; }
+
+  .cta-bubble {
+    align-self: stretch;
+    margin-top: 32px;
+    background: var(--tw-ink);
+    color: #fff;
+    border-radius: 24px;
+    padding: 36px 32px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 700ms ease, transform 700ms ease;
+  }
+  .cta-bubble.in { opacity: 1; transform: translateY(0); }
+  .cta-bubble h2 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 36px;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin: 0 0 12px;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+  .cta-bubble h2 em {
+    color: var(--tw-orange);
+    font-style: italic;
+  }
+  .cta-bubble p {
+    font-size: 15px;
+    color: rgba(245,238,228,0.75);
+    margin: 0 0 28px;
+    line-height: 1.5;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--tw-orange);
+    color: #fff;
+    padding: 16px 28px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    box-shadow: 0 8px 24px -6px rgba(240,122,31,0.5);
+    transition: transform 180ms ease, box-shadow 180ms ease;
+  }
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px -6px rgba(240,122,31,0.6);
+  }
+  .cta-btn .arrow {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: rgba(255,255,255,0.22);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cta-small {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    margin-top: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    color: rgba(245,238,228,0.55);
+    text-transform: uppercase;
+    flex-wrap: wrap;
+  }
+
+  .hero {
+    padding: 120px 20px 40px;
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--tw-orange);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--tw-orange);
+  }
+  .hero h1 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: clamp(44px, 7vw, 72px);
+    line-height: 0.96;
+    letter-spacing: -0.035em;
+    font-weight: 600;
+    margin: 0;
+    color: var(--tw-ink);
+    text-wrap: balance;
+  }
+  .hero h1 em {
+    color: var(--tw-orange);
+    font-style: italic;
+    font-weight: 500;
+  }
+  .hero p {
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--tw-muted);
+    margin: 24px auto 0;
+    max-width: 440px;
+    text-wrap: pretty;
+  }
+  .hero-scroll {
+    margin-top: 48px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.15em;
+    color: var(--tw-muted);
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    animation: floatY 2.4s ease-in-out infinite;
+  }
+  @keyframes floatY {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+
+  .footer {
+    max-width: 640px;
+    margin: 40px auto 0;
+    padding: 40px 20px 60px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--tw-muted);
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer a { color: inherit; text-decoration: none; }
+  .footer a:hover { color: var(--tw-orange); }
+
+  @media (max-width: 520px) {
+    .msg { font-size: 15px; }
+    .msg.statement { font-size: 22px; }
+    .cta-bubble h2 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-gradient" id="bgGradient"></div>
+
+<!-- Fixed chat header -->
+<div class="chat-header">
+  <div class="chat-header-inner">
+    <div class="avatar avatar-pulse">
+      <img src="logo-twyn.png" alt="Twyn">
+    </div>
+    <div class="chat-header-meta">
+      <div class="chat-header-name">Twyn</div>
+      <div class="chat-header-status">online · digitando pra você</div>
+    </div>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-eyebrow">seu amigo bilíngue</div>
+  <h1>Aprenda inglês <em>conversando.</em></h1>
+  <p>Sem curso. Sem apostila. Só mensagens no seu WhatsApp — do jeito que você já fala com os amigos.</p>
+  <div class="hero-scroll">↓ role para conversar</div>
+</section>
+
+<!-- Conversation -->
+<div class="chat-container" id="chat">
+
+  <div class="timestamp">hoje</div>
+
+  <div class="msg bot">Oi! Eu sou o <strong>Twyn</strong> 👋</div>
+  <div class="msg bot tail-continue">Um amigo que vive no seu chat pra te ajudar com inglês.</div>
+
+  <div class="group-gap"></div>
+
+  <div class="msg me">espera, é um app?</div>
+
+  <div class="group-gap"></div>
+
+  <div class="msg bot">Não! É só um contato no seu WhatsApp.</div>
+  <div class="msg bot tail-continue">Você manda mensagem, eu respondo. Igual a qualquer outro chat.</div>
+
+  <div class="group-gap"></div>
+
+  <div class="msg me">E como funciona isso?</div>
+
+  <div class="group-gap"></div>
+
+  <div class="msg bot statement">Você <em>conversa comigo</em> em português ou inglês. Eu te ensino no meio da conversa.</div>
+
+  <div class="group-gap"></div>
+
+  <div class="msg bot">Pode me mandar:</div>
+  <div class="msg bot tail-continue">📝 texto — tipo "como se diz tô com saudade?"</div>
+  <div class="msg bot tail-continue">🎤 áudio — pra praticar sua pronúncia</div>
+  <div class="msg bot tail-continue">📸 foto — do cardápio, da placa, do email do chefe</div>
+
+  <div class="group-gap"></div>
+
+  <div class="msg me">e aí você me corrige?</div>
+
+  <div class="group-gap"></div>
+
+  <div class="msg bot">Com jeitinho.</div>
+  <div class="msg bot tail-continue">Sem caneta vermelha, sem tom de professor chato. Só um amigo dizendo "ó, se falar assim fica melhor".</div>
+
+  <div class="group-gap"></div>
+
+  <div class="msg bot">Quer experimentar agora? Salva meu contato:</div>
+
+  <a class="contact-card" href="https://wa.me/message/CXC34GO6SX3KP1">
+    <div class="contact-card-top">
+      <div class="contact-card-avatar">
+        <img src="logo-twyn.png" alt="Twyn">
+      </div>
+      <div>
+        <div class="contact-card-name">Twyn — amigo bilíngue</div>
+        <div class="contact-card-phone">+55 11 9••••-••••</div>
+      </div>
+    </div>
+    <div class="contact-card-cta">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M21 12a9 9 0 1 1-4.2-7.6L21 3l-1.1 4.2A9 9 0 0 1 21 12z" stroke="currentColor" stroke-width="1.8" fill="none"/></svg>
+      Mandar mensagem
+    </div>
+  </a>
+
+  <div class="timestamp">quando vem a pergunta chave</div>
+
+  <div class="msg me statement">e se eu <em>não souber nada</em> de inglês?</div>
+
+  <div class="group-gap"></div>
+
+  <div class="msg bot">Melhor ainda 😊</div>
+  <div class="msg bot tail-continue">Fala comigo em português quando precisar. Eu respondo em português com exemplos em inglês prontos pra você usar.</div>
+  <div class="msg bot tail-continue">Você vai pegando o jeito sem perceber.</div>
+
+  <div class="group-gap"></div>
+
+  <div class="msg me">e quanto custa?</div>
+
+  <div class="group-gap"></div>
+
+  <div class="msg bot">7 dias grátis pra testar.</div>
+  <div class="msg bot tail-continue">Depois, menos que um café por semana. Cancela quando quiser, sem drama.
+    <a class="inline-cta" href="https://wa.me/message/CXC34GO6SX3KP1">
+      Teste agora
+      <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+
+  <div class="group-gap"></div>
+
+  <div class="msg me">posso começar agora?</div>
+
+  <div class="group-gap"></div>
+
+  <div class="msg bot statement">Pode. <em>Me manda um oi</em> no WhatsApp e a gente começa a conversar 👇</div>
+
+  <!-- Final CTA -->
+  <div class="cta-bubble">
+    <h2>Bora <em>trocar uma ideia?</em></h2>
+    <p>Primeira semana grátis, sem download.</p>
+    <a href="https://wa.me/message/CXC34GO6SX3KP1" class="cta-btn">
+      Começar no WhatsApp
+      <span class="arrow">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </a>
+    <div class="cta-small">
+      <span>✓ 7 dias grátis</span>
+      <span>✓ 3 meses com desconto</span>
+      <span>✓ cancela quando quiser</span>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <span>twyn · 2026</span>
+  <div style="display:flex; gap: 18px;">
+    <a href="#">termos</a>
+    <a href="#">privacidade</a>
+    <a href="#">contato</a>
+  </div>
+  <span>feito em 🇧🇷</span>
+</footer>
+
+<script>
+  // Fade messages in as they enter viewport
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.2, rootMargin: '0px 0px -60px 0px' });
+
+  document.querySelectorAll('.msg, .timestamp, .cta-bubble, .contact-card').forEach((el) => io.observe(el));
+
+  // Scroll-driven gradient: interpolates from light peach → full Twyn orange as you scroll
+  const bg = document.getElementById('bgGradient');
+  const palette = [
+    [255, 245, 232], // #FFF5E8 — light peach (top)
+    [253, 229, 197], // #FDE5C5
+    [248, 185, 122], // #F8B97A
+    [240, 122,  31], // #F07A1F — full orange (bottom)
+  ];
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function colorAt(pos) {
+    const seg = pos * (palette.length - 1);
+    const i = Math.min(palette.length - 2, Math.floor(seg));
+    const f = seg - i;
+    const a = palette[i], b = palette[i + 1];
+    return [lerp(a[0],b[0],f), lerp(a[1],b[1],f), lerp(a[2],b[2],f)].map(Math.round);
+  }
+  function rgb([r,g,b]) { return `rgb(${r},${g},${b})`; }
+
+  function updateBg() {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const t = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    const top = colorAt(t * 0.55);
+    const mid = colorAt(t * 0.55 + 0.22);
+    const bot = colorAt(Math.min(1, t * 0.55 + 0.45));
+    bg.style.background = `linear-gradient(180deg, ${rgb(top)} 0%, ${rgb(mid)} 50%, ${rgb(bot)} 100%)`;
+  }
+  updateBg();
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => { updateBg(); ticking = false; });
+      ticking = true;
+    }
+  }, { passive: true });
+  window.addEventListener('resize', updateBg);
+</script>
+
+</body>
+</html>
