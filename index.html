@@ -383,20 +383,55 @@
 
   .footer {
     max-width: 640px;
-    margin: 40px auto 0;
-    padding: 40px 20px 60px;
+    margin: 0 auto;
+    padding: 48px 20px 56px;
+    border-top: 1px solid rgba(26,20,16,0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .footer-logo {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--tw-ink);
+  }
+  .footer-tagline {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--tw-muted);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .footer-links {
+    display: flex;
+    gap: 24px;
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     letter-spacing: 0.08em;
-    color: var(--tw-muted);
     text-transform: uppercase;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
   }
-  .footer a { color: inherit; text-decoration: none; }
-  .footer a:hover { color: var(--tw-orange); }
+  .footer-links a {
+    color: var(--tw-muted);
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+  .footer-links a:hover { color: var(--tw-orange); }
+  .footer-copy {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(107,95,84,0.5);
+  }
 
   @media (max-width: 520px) {
     .msg { font-size: 15px; }
@@ -427,7 +462,7 @@
   <div class="hero-eyebrow">seu amigo bilíngue</div>
   <h1>Aprenda inglês <em>conversando.</em></h1>
   <p>Sem curso. Sem apostila. Só mensagens no seu WhatsApp, do jeito que você já fala com os amigos.</p>
-  <div class="hero-scroll">↓ role para saber mais<br/>↓</div>
+  <div class="hero-scroll">↓ &nbsp; role para saber mais</div>
 </section>
 
 <!-- Conversation -->
@@ -543,13 +578,16 @@
 
 <!-- Footer -->
 <footer class="footer">
-  <span>twyn · 2026</span>
-  <div style="display:flex; gap: 18px;">
-    <a href="#">termos</a>
-    <a href="#">privacidade</a>
-    <a href="#">contato</a>
+  <div class="footer-brand">
+    <div class="footer-logo">twyn</div>
+    <div class="footer-tagline">seu amigo bilíngue, no seu chat · feito em 🇧🇷</div>
   </div>
-  <span>feito em 🇧🇷</span>
+  <div class="footer-links">
+    <a href="javascript:void(0)">termos</a>
+    <a href="javascript:void(0)">privacidade</a>
+    <a href="mailto:contato@twyn.ia.br">contato</a>
+  </div>
+  <div class="footer-copy">© 2026 twyn · todos os direitos reservados</div>
 </footer>
 
 <script>
