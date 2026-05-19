@@ -7,7 +7,213 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="_page-shell.css">
+<style>
+/* Shared shell for Termos / Privacidade / Contato — matches landing brand */
+:root {
+  --tw-primary: #FF4601;
+  --tw-primary-deep: #5A3A31;
+  --tw-accent: #FDE74C;
+  --tw-bg-1: #FFF4EC;
+  --tw-bg-2: #FFDFC2;
+  --tw-bg-3: #FFA866;
+  --tw-bg-4: #FF4601;
+  --tw-ink: #31231E;
+  --tw-ink-soft: #5A3A31;
+  --tw-muted: #8A7567;
+  --tw-cream: #FFFFFF;
+  --tw-line: rgba(49, 35, 30, 0.10);
+  --tw-mint: #566E3D;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  color: var(--tw-ink);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background:
+    linear-gradient(180deg, var(--tw-bg-1) 0%, var(--tw-bg-2) 100%) no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+::selection { background: var(--tw-primary); color: #fff; }
+
+/* Header */
+.shell-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--tw-bg-1) 82%, transparent);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--tw-line);
+}
+.shell-header-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.shell-back {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tw-ink);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--tw-line);
+  background: rgba(255,255,255,0.6);
+  transition: background 150ms ease, transform 150ms ease;
+}
+.shell-back:hover { background: #fff; transform: translateX(-2px); }
+.shell-brand {
+  display: flex; align-items: center; gap: 10px;
+  margin-left: auto;
+  text-decoration: none; color: inherit;
+}
+.shell-brand img {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--tw-bg-3);
+  object-fit: cover;
+  box-shadow: 0 4px 10px -4px rgba(255,70,1,0.5);
+}
+.shell-brand-name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Page body */
+.shell-main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 56px 22px 80px;
+}
+.shell-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--tw-primary);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tw-primary) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tw-primary) 25%, transparent);
+}
+.shell-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(40px, 6vw, 64px);
+  line-height: 0.96;
+  letter-spacing: -0.035em;
+  font-weight: 600;
+  margin: 0 0 18px;
+  color: var(--tw-ink);
+  text-wrap: balance;
+}
+.shell-title em {
+  color: var(--tw-primary);
+  font-style: italic;
+  font-weight: 500;
+}
+.shell-lede {
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--tw-ink-soft);
+  margin: 0 0 12px;
+  max-width: 640px;
+  text-wrap: pretty;
+}
+.shell-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--tw-muted);
+  text-transform: uppercase;
+  margin-bottom: 36px;
+}
+
+/* Card */
+.card {
+  background: var(--tw-cream);
+  border: 1px solid var(--tw-line);
+  border-radius: 24px;
+  padding: 32px;
+  margin-bottom: 16px;
+  box-shadow: 0 18px 40px -28px rgba(49,35,30,0.25);
+}
+.card h2 {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  margin: 0 0 12px;
+  color: var(--tw-ink);
+  display: flex; align-items: center; gap: 12px;
+}
+.card h2 .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--tw-primary);
+  background: color-mix(in srgb, var(--tw-primary) 12%, white);
+  padding: 4px 9px;
+  border-radius: 7px;
+}
+.card p {
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tw-ink-soft);
+  margin: 0 0 10px;
+}
+.card p:last-child { margin-bottom: 0; }
+.card ul {
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--tw-ink-soft);
+  padding-left: 20px;
+  margin: 8px 0 14px;
+}
+.card ul li { margin-bottom: 6px; }
+.card a {
+  color: var(--tw-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Footer */
+.shell-footer {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 30px 22px 60px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--tw-muted);
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.shell-footer a { color: inherit; text-decoration: none; }
+.shell-footer a:hover { color: var(--tw-primary); }
+.shell-footer .footer-links { display: flex; gap: 18px; }
+
+@media (max-width: 600px) {
+  .card { padding: 24px 22px; }
+  .shell-back { padding: 7px 10px; }
+}
+
+</style>
 <style>
   .contact-grid {
     display: grid;
