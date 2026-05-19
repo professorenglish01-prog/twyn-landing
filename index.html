@@ -1042,48 +1042,58 @@
   .lesson.current .lesson-status.now { color: var(--tw-primary-deep); font-weight: 700; }
   .lesson.current .lesson-num { color: var(--tw-primary-deep); }
 
+  /* ensure no horizontal overflow */
+  html, body { overflow-x: hidden; }
+
+  @media (max-width: 1000px) {
+    .stats-row  { grid-template-columns: repeat(2, 1fr); }
+    .levels-grid { grid-template-columns: repeat(2, 1fr); }
+  }
   @media (max-width: 820px) {
     .modes-grid { grid-template-columns: 1fr; }
     .tools-grid { grid-template-columns: repeat(2, 1fr); }
-    .stats-row, .levels-grid { grid-template-columns: repeat(2, 1fr); }
     .block-detail { padding: 22px; }
     .curriculum-section { margin: 60px auto 40px; }
     .footer { flex-direction: column; align-items: center; text-align: center; gap: 12px; }
   }
   @media (max-width: 640px) {
-    .hero { padding: 100px 20px 48px; }
-    .hero h1 { font-size: clamp(38px, 10vw, 64px); }
-    .hero p { font-size: 16px; }
-    .hero-ctas { flex-direction: column; align-items: center; gap: 10px; }
-    .hero-meta { flex-direction: column; gap: 8px; }
+    .hero { padding: 100px 16px 40px; }
+    .hero h1 { font-size: clamp(36px, 9vw, 56px); }
+    .hero p { font-size: 15px; }
+    .hero-ctas { flex-direction: column; align-items: stretch; gap: 10px; }
+    .hero-ctas .btn-primary, .hero-ctas .btn-ghost { width: 100%; justify-content: center; text-align: center; }
+    .hero-meta { flex-direction: column; gap: 6px; }
     .hero-chips { display: none; }
+    .hero-scroll { display: none; }
     .header-cta { display: none; }
-    .chat-container { padding: 28px 14px 60px; }
-    .msg { font-size: 15px; padding: 12px 15px; max-width: 88%; }
-    .msg.statement { font-size: 22px; padding: 18px 20px; max-width: 96%; }
-    .modes-grid { gap: 12px; }
-    .mode-card { padding: 22px 18px; }
+    .chat-container { padding: 24px 14px 48px; }
+    .msg { font-size: 14.5px; padding: 11px 14px; max-width: 90%; }
+    .msg.statement { font-size: 20px; padding: 16px 18px; max-width: 98%; }
+    .modes-grid { gap: 10px; }
+    .mode-card { padding: 20px 16px; }
+    .modes-section { padding: 48px 14px 40px; }
     .tools-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-    .tool-card { padding: 18px 14px; }
+    .tool-card { padding: 16px 12px; }
     .stats-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .levels-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-    .level-card { padding: 18px 14px; }
-    .curriculum-section { padding: 0 14px; margin: 48px auto 32px; }
-    .curriculum-title { font-size: clamp(28px, 8vw, 40px); }
-    .block-detail { padding: 18px 16px; }
-    .cta-bubble { padding: 32px 20px; border-radius: 22px; }
-    .cta-bubble h2 { font-size: clamp(26px, 7vw, 36px); }
-    .cta-btn { padding: 14px 22px; font-size: 15px; width: 100%; justify-content: center; }
-    .cta-small { gap: 10px; font-size: 9.5px; }
-    .contact-card { max-width: 96%; }
-    .footer { padding: 28px 16px 48px; }
+    .levels-grid { grid-template-columns: 1fr; gap: 10px; }
+    .level-card { padding: 18px 16px; }
+    .curriculum-section { padding: 0 14px; margin: 40px auto 28px; max-width: 100%; }
+    .curriculum-title { font-size: clamp(26px, 7vw, 38px); }
+    .curriculum-sub { font-size: 15px; }
+    .block-detail { padding: 18px 16px; max-width: 100%; }
+    .cta-bubble { padding: 28px 18px; border-radius: 20px; }
+    .cta-bubble h2 { font-size: clamp(24px, 7vw, 34px); }
+    .cta-btn { padding: 14px 20px; font-size: 15px; width: 100%; justify-content: center; }
+    .cta-small { gap: 8px; font-size: 9px; flex-direction: column; align-items: center; }
+    .contact-card { max-width: 100%; }
+    .footer { padding: 24px 16px 40px; flex-direction: column; align-items: center; gap: 10px; }
   }
-  @media (max-width: 380px) {
-    .hero h1 { font-size: 34px; }
-    .msg { max-width: 94%; }
+  @media (max-width: 400px) {
+    .hero h1 { font-size: 32px; }
+    .msg { max-width: 95%; }
+    .stats-row { grid-template-columns: 1fr 1fr; gap: 8px; }
     .tools-grid { grid-template-columns: 1fr; }
-    .levels-grid { grid-template-columns: 1fr; }
-    .stats-row { grid-template-columns: 1fr 1fr; }
+    .stat { padding: 16px 12px; }
   }
 </style>
 </head>
@@ -1267,7 +1277,7 @@
   </div>
 
   <div class="levels-grid" style="margin: 0px 0px 30px; width: 1060px; text-align: left">
-    <div class="level-card" data-level="a1" style="width: 250.5px">
+    <div class="level-card" data-level="a1" style="width:100%">
       <div class="level-head"><span class="level-badge">A1</span><span class="level-name">Iniciante</span></div>
       <div class="level-meta">≈ 16 blocos · 110 lições</div>
       <ul class="level-topics">
@@ -1276,7 +1286,7 @@
         <li>rotinas, horários, números</li>
       </ul>
     </div>
-    <div class="level-card" data-level="a2" style="width: 250.5px">
+    <div class="level-card" data-level="a2" style="width:100%">
       <div class="level-head"><span class="level-badge">A2</span><span class="level-name">Básico+</span></div>
       <div class="level-meta">≈ 16 blocos · 120 lições</div>
       <ul class="level-topics">
@@ -1285,7 +1295,7 @@
         <li>contar histórias, fazer planos</li>
       </ul>
     </div>
-    <div class="level-card" data-level="b1" style="width: 250.5px">
+    <div class="level-card" data-level="b1" style="width:100%">
       <div class="level-head"><span class="level-badge">B1</span><span class="level-name">Intermediário</span></div>
       <div class="level-meta">≈ 24 blocos · 120 lições</div>
       <ul class="level-topics">
@@ -1294,7 +1304,7 @@
         <li>opinar, argumentar, contar causos</li>
       </ul>
     </div>
-    <div class="level-card" data-level="b2" style="width: 250.5px">
+    <div class="level-card" data-level="b2" style="width:100%">
       <div class="level-head"><span class="level-badge">B2</span><span class="level-name">Avançado</span></div>
       <div class="level-meta">≈ 40 blocos · 100 lições</div>
       <ul class="level-topics">
