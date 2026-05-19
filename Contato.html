@@ -417,16 +417,7 @@ html, body {
 
     <!-- SIDEBAR -->
     <div>
-      <div class="side-card">
-        <div class="side-card-head">
-          <div class="side-icon">✉️</div>
-          <div class="side-title">por e-mail</div>
-        </div>
-        <p>Prefere mandar direto?</p>
-        <p><a href="mailto:hello@twyn.com.br" id="emailLink">hello@twyn.com.br</a></p>
-      </div>
-
-      <div class="side-card">
+<div class="side-card">
         <div class="side-card-head">
           <div class="side-icon">💬</div>
           <div class="side-title">pelo whatsapp</div>
@@ -472,9 +463,6 @@ html, body {
   const CONTACT_ENDPOINT = ''; // ex: 'https://formspree.io/f/XXXXXXX'
 
   // Sincroniza o link "por e-mail" da sidebar com a config acima
-  const emailLink = document.getElementById('emailLink');
-  emailLink.href = 'mailto:' + CONTACT_EMAIL;
-  emailLink.textContent = CONTACT_EMAIL;
 
   const form = document.getElementById('contactForm');
   const status = document.getElementById('formStatus');
